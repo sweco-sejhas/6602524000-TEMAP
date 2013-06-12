@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('6602524000TEMAPApp', [])
+angular.module('TEMAPApp', [])
   .config ['$routeProvider', ($routeProvider) ->
     $routeProvider
       .when '/',
