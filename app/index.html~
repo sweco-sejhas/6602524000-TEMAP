@@ -48,7 +48,7 @@
             <div ng-controller="ObjektCtrl" ng-switch on="ObjectType.selected">
               <div ng-switch-when="0">
                 <div style="height:{{scrollItems.topPadSize}}px"></div>
-                <ul class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="0">
+                <ul class="object-list" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="0">
                   <li ng-repeat="item in scrollItems.currentItems">
                     <a href="#"><span>{{item}}</span></a>
                   </li>

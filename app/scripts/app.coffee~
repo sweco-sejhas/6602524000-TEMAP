@@ -1,0 +1,48 @@
+'use strict'
+
+TEMAPApp = angular.module 'TEMAPApp', ['ui.bootstrap','infinite-scroll']
+window.TEMAPApp = TEMAPApp
+
+TEMAPApp.factory 'ObjectType', ->
+  selected:null
+
+###TEMAPApp.directive 'mapsize', ($window) ->
+  ($scope) ->
+    $scope.height = $window.innerHeight
+    
+    headerEl = angular.element '#header-menu > div > ul'
+    
+    resizor = ->
+      $scope.$apply ->
+          console.log (headerEl.outerHeight true)
+          $scope.height = $window.innerHeight - (headerEl.outerHeight true)
+    
+    setTimeout ()->
+      resizor()
+    ,0
+    angular.element($window).bind 'resize', resizor###
+    
+TEMAPApp.directive 'autosize', ($window) ->
+  ($scope, element, attrs) ->
+    selectors = attrs.autosize.split ','
+    elems = []
+    
+    for selector in selectors
+      elems.push ($ selector)
+    
+    resizor = ->
+      $scope.$apply ->
+          height = 0
+          for el in elems
+            if el.is ':visible'
+              height += el.outerHeight true
+              
+          element.height ($window.innerHeight - height)
+          
+    angular.element($window).bind 'resize', resizor
+    element.bind '$destroy', ->
+      angular.element($window).unbind 'resize', resizor
+      
+    setTimeout ()->
+      resizor()
+    ,0

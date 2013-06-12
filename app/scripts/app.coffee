@@ -1,11 +1,9 @@
 'use strict'
 
-angular.module('TEMAPApp', [])
-  .config ['$routeProvider', ($routeProvider) ->
-    $routeProvider
-      .when '/',
-        templateUrl: 'views/main.html'
-        controller: 'MainCtrl'
-      .otherwise
-        redirectTo: '/'
-  ]
+TEMAPApp = angular.module 'TEMAPApp', ['ui.bootstrap','infinite-scroll']
+window.TEMAPApp = TEMAPApp
+
+TEMAPApp.factory 'ObjectType', ->
+  selected:null
+    
+
