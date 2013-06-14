@@ -1,7 +1,6 @@
-'use strict'
 mod = angular.module('infinite-scroll', [])
 
-mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout','$parse', ($rootScope, $window, $timeout, $parse) ->
+mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScope, $window, $timeout) ->
   link: (scope, elem, attrs) ->
     $window = angular.element($window)
 
@@ -11,13 +10,9 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout','$parse', (
     # more when the bottom of the page is less than 3 window heights away,
     # specify a value of 3. Defaults to 0.
     scrollDistance = 0
-    if attrs.infiniteScrollDistance != null
+    if attrs.infiniteScrollDistance?
       scope.$watch attrs.infiniteScrollDistance, (value) ->
         scrollDistance = parseInt(value, 10)
-
-    prevScrollTop = 0
-    elemOffset = 0
-    firstLoad = true
 
     # infinite-scroll-disabled specifies a boolean that will keep the
     # infnite scroll function from being called; this is useful for
@@ -27,7 +22,7 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout','$parse', (
     # will be triggered again.
     scrollEnabled = true
     checkWhenEnabled = false
-    if attrs.infiniteScrollDisabled != null
+    if attrs.infiniteScrollDisabled?
       scope.$watch attrs.infiniteScrollDisabled, (value) ->
         scrollEnabled = !value
         if scrollEnabled && checkWhenEnabled
@@ -40,51 +35,16 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout','$parse', (
     # with a boolean that is set to true when the function is
     # called in order to throttle the function call.
     handler = ->
-      direction = 1
-      
-      if ($window.scrollTop() - prevScrollTop) < 0
-        direction = -1
-        
-      prevScrollTop = $window.scrollTop()
-      
       windowBottom = $window.height() + $window.scrollTop()
-      windowTop = $window.scrollTop()
       elementBottom = elem.offset().top + elem.height()
-      elementTop = elem.offset().top
-      
-      shouldScroll = false
-      
-      if elementBottom <= windowBottom
-        shouldScroll = true
-        
-      if elementTop-elemOffset >= windowTop
-        shouldScroll = true
-      
-    
-      if firstLoad
-        if $window.scrollTop() == 0
-          elemOffset = elem.offset().top
-          
-        fn = $parse attrs.infiniteScroll
-        scope.$apply () -> 
-          fn scope, $event:
-            type:'setup'
-            elemHeight:elem.height()
-              
-        firstLoad = false
-      else if shouldScroll && scrollEnabled
-        ev = 
-          type:'scroll'
-          elemHeight:elem.height()
-          direction:direction
-        
+      remaining = elementBottom - windowBottom
+      shouldScroll = remaining <= $window.height() * scrollDistance
+
+      if shouldScroll && scrollEnabled
         if $rootScope.$$phase
-          scope.$eval attrs.infiniteScroll $event:ev
+          scope.$eval attrs.infiniteScroll
         else
-          fn = $parse attrs.infiniteScroll
-          scope.$apply () -> 
-            fn scope, $event:ev
-          
+          scope.$apply attrs.infiniteScroll
       else if shouldScroll
         checkWhenEnabled = true
 
@@ -92,11 +52,11 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout','$parse', (
     scope.$on '$destroy', ->
       $window.off 'scroll', handler
 
-    $timeout ->
+    $timeout (->
       if attrs.infiniteScrollImmediateCheck
         if scope.$eval(attrs.infiniteScrollImmediateCheck)
           handler()
       else
         handler()
-    , 0
+    ), 0
 ]

@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="styles/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
     
@@ -21,7 +21,8 @@
     <script src="components/angular-cookies/angular-cookies.js"></script>
     <script src="components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/infinite-scroll.js"></script>
-    <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.4.0-SNAPSHOT.min.js"></script>  
+    <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.4.0-SNAPSHOT.min.js"></script>
+    <script type="text/javascript" src="http://nparashuram.com/IndexedDBShim/dist/IndexedDBShim.min.js"></script>
   </head>
   <body ng-app="TEMAPApp">
     <!--[if lt IE 7]>
@@ -34,33 +35,38 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div ng-controller="TabCtrl">
-      <tabset id="header-menu">
-          <tab heading="Objekttyp" active="typeTab.active">
-            <ul ng-controller="ObjektTypCtrl" class="object-list">
-              <li ng-click="setType(t)" ng-repeat="t in objectTypes"><a href="#"><span>{{t.name}}</span></a></li>
-            </ul>
-          </tab>
-          <tab heading="Objekt" active="objTab.active">
-            <div class="object-list-filter">
-              <div class="input-append"><button class="btn">Geografisk sortering</button><input type="text" placeholder="Sökfilter"></input></div>
-            </div>
-            <div ng-controller="ObjektCtrl" ng-switch on="ObjectType.selected">
-              <div ng-switch-when="0">
+    <div ng-controller="DataUpdateCtrl" ng-switch on="updating">
+      <img class="loading-center" src="styles/ajax-loader.gif" ng-switch-when="true" />
+      <div ng-switch-when="false" ng-controller="TabCtrl">
+        <tabset id="header-menu">
+            <tab heading="Objekttyp" active="typeTab.active">
+              <ul ng-controller="ObjektTypCtrl" class="object-list">
+                <li ng-click="setType(t)" ng-repeat="t in objectTypes">
+                  <a href="javascript:void(0)">
+                    <span>{{t.name}}</span>
+                  </a>
+                </li>
+              </ul>
+            </tab>
+            <tab heading="Objekt" active="objTab.active">
+              <div ng-controller="ObjektCtrl" ng-switch on="ObjectType.selected">
+                <div class="object-list-filter">
+                  <div class="input-append">
+                    <button class="btn filter-item" ng-disabled="scrollItems.positionUnavailable" ng-click=toggleGeoSort()><i ng-class="{true:'icon-ok-sign', false:'icon-minus-sign'}[scrollItems.geoSort]"></i> Geografisk sortering</button>
+                    <input class="filter-item" ng-change="applyTextFilter()" ng-model="scrollItems.filter.text" type="text" placeholder="Sökfilter"></input></div>
+                </div>
                 <div style="height:{{scrollItems.topPadSize}}px"></div>
-                <ul class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="0">
-                  <li ng-repeat="item in scrollItems.currentItems">
-                    <a href="#"><span>{{item}}</span></a>
-                  </li>
-                </ul>
-                <div style="height:{{scrollItems.bottomPadSize}}px"></div>
+                  <ul class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="1">
+                    <li ng-click="selectItem(item)" ng-repeat="item in scrollItems.currentItems | orderBy:n">
+                      <a href="javascript:void(0)"><span>{{item}}</span></a>
+                    </li>
+                  </ul>
+                  <div style="height:{{scrollItems.bottomPadSize}}px"></div>
               </div>
-              <span ng-switch-when="1">Kabelskåp</span>
-              <span ng-switch-when="2">Nätstation</span>
-            </div>
-          </tab>
-          <tab heading="Karta" active="mapTab.active"><div id="map" autosize="#header-menu > div > ul, .object-list-filter">Kartan</div></tab>
-      </tabset>
+            </tab>
+            <tab heading="Karta" active="mapTab.active"><div id="map" autosize="#header-menu > div > ul, .object-list-filter">Kartan</div></tab>
+        </tabset>
+      </div>
     </div>
 
     <!-- build:js scripts/scripts.js -->
@@ -71,6 +77,10 @@
     <script src="scripts/controllers/objekt.js"></script>
     <script src="scripts/services/scrollItems.js"></script>
     <script src="scripts/directives/autosize.js"></script>
+    <script src="scripts/services/data.js"></script>
+    <script src="scripts/controllers/dataUpdate.js"></script>
+    <script src="scripts/services/db.js"></script>
+    <script src="scripts/services/geo.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

@@ -33,6 +33,10 @@
   padding-top:20px;
 }
 
+.filter-item {
+  margin-left:10px !important;
+}
+
 .filterable {
   padding-top:60px;
 }
@@ -48,6 +52,14 @@
 #header-menu > div > ul > li {
   width:33%;
   text-align:center;
+}
+
+.loading-center{
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin-left:-16px;
+  margin-top:-16px;
 }
 
 body {
