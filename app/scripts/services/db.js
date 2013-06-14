@@ -10,18 +10,12 @@
       return idb = req.result;
     };
     req.onupgradeneeded = function(evt) {
-      var osBelysning, osKabelskap, osNatstationer, osVersion;
+      var osData, osVersion;
       idb = evt.target.result;
       osVersion = idb.createObjectStore('version', {
         keyPath: 'n'
       });
-      osBelysning = idb.createObjectStore('belysning', {
-        keyPath: 'n'
-      });
-      osKabelskap = idb.createObjectStore('kabelskap', {
-        keyPath: 'n'
-      });
-      return osNatstationer = idb.createObjectStore('natstationer', {
+      return osData = idb.createObjectStore('data', {
         keyPath: 'n'
       });
     };
@@ -53,18 +47,6 @@
           return cb();
         }
       },
-      clear: function(name, cb) {
-        var store, transaction;
-        transaction = idb.transaction([name], 'readwrite');
-        transaction.oncomplete = cb;
-        transaction.onerror = function(ev) {
-          return console.log('transaction-error');
-        };
-        store = transaction.objectStore(name);
-        req = store.clear();
-        req.onsuccess = function(evt) {};
-        return req.onerror = function(evt) {};
-      },
       needsUpdate: function(name, version, update, noUpdate) {
         var store, transaction;
         transaction = idb.transaction(['version'], 'readwrite');
@@ -80,37 +62,29 @@
         };
       },
       persist: function(name, version, data, cb) {
-        return this.clear(name, function() {
-          var item, store, transaction, _i, _len;
-          transaction = idb.transaction([name], 'readwrite');
-          transaction.oncomplete = function() {
-            return updateVersion(name, version, cb);
-          };
-          transaction.onerror = function(ev) {};
-          store = transaction.objectStore(name);
-          for (_i = 0, _len = data.length; _i < _len; _i++) {
-            item = data[_i];
-            req = store.add(item);
-            req.onsuccess = function(evt) {};
-            req.onerror = function(ev) {};
-          }
+        var store, transaction;
+        transaction = idb.transaction(['data'], 'readwrite');
+        transaction.oncomplete = function() {};
+        transaction.onerror = function(ev) {};
+        store = transaction.objectStore('data');
+        req = store.put({
+          n: name,
+          data: data
         });
+        req.onerror = function(evt) {};
+        return req.onsuccess = function(evt) {
+          return updateVersion(name, version, cb);
+        };
       },
       getAsArray: function(name, cb) {
-        var all, store, transaction;
-        all = [];
-        transaction = idb.transaction([name], 'readwrite');
-        transaction.oncomplete = function() {
-          return cb(all);
-        };
-        store = transaction.objectStore(name);
-        return store.openCursor().onsuccess = function(evt) {
-          var cursor;
-          cursor = evt.target.result;
-          if (cursor != null) {
-            all.push(cursor.value);
-            return cursor["continue"]();
-          }
+        var store, transaction;
+        transaction = idb.transaction(['data'], 'readwrite');
+        transaction.oncomplete = function() {};
+        store = transaction.objectStore('data');
+        req = store.get(name);
+        req.onerror = function(evt) {};
+        return req.onsuccess = function(evt) {
+          return cb(evt.target.result.data);
         };
       }
     };

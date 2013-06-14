@@ -15,9 +15,7 @@ angular.module('TEMAPApp')
     req.onupgradeneeded = (evt) ->
       idb = evt.target.result
       osVersion = idb.createObjectStore 'version', keyPath:'n'
-      osBelysning = idb.createObjectStore 'belysning', keyPath:'n' 
-      osKabelskap = idb.createObjectStore 'kabelskap', keyPath:'n' 
-      osNatstationer = idb.createObjectStore 'natstationer', keyPath:'n'  
+      osData = idb.createObjectStore 'data', keyPath:'n'
     
     req.onerror = (evt) ->
       console.log 'IndexedDB error: ' + evt.target.errorCode
@@ -43,20 +41,7 @@ angular.module('TEMAPApp')
           ,10
         else
           cb()
-    
-      clear: (name, cb) ->
-        transaction = idb.transaction [name], 'readwrite'
-        transaction.oncomplete = cb
-          
-        transaction.onerror = (ev) ->
-          console.log 'transaction-error'
-        
-        store = transaction.objectStore name
-        req = store.clear()
-        
-        req.onsuccess = (evt) ->
-        req.onerror = (evt) ->
-        
+       
       needsUpdate: (name, version, update, noUpdate) ->
         transaction = idb.transaction ['version'], 'readwrite'
         store = transaction.objectStore('version')
@@ -72,32 +57,33 @@ angular.module('TEMAPApp')
             noUpdate(name)
       
       persist: (name, version, data, cb) ->
-        this.clear name, ->
-          transaction = idb.transaction [name], 'readwrite'
-          transaction.oncomplete = ()->
-            updateVersion(name, version, cb)
-            
-          transaction.onerror = (ev) ->
-            #TODO
-          
-          store = transaction.objectStore name
-          for item in data
-            req = store.add item
-            req.onsuccess = (evt) ->
-            req.onerror = (ev) ->
-            
-          return
-
-      getAsArray: (name, cb) ->
-        all = []
-        transaction = idb.transaction [name], 'readwrite'
+        transaction = idb.transaction ['data'], 'readwrite'
         transaction.oncomplete = ()->
-          cb(all)
+          #TODO?
+          
+        transaction.onerror = (ev) ->
+          #TODO
         
-        store = transaction.objectStore name
-        store.openCursor().onsuccess = (evt) ->
-          cursor = evt.target.result
-          if cursor?
-            all.push cursor.value
-            cursor.continue()
+        store = transaction.objectStore 'data'
+        
+        req = store.put 
+         n:name
+         data:data
+        
+        req.onerror = (evt) ->
+        req.onsuccess = (evt) ->
+          updateVersion(name, version, cb)
+        
+      getAsArray: (name, cb) ->
+        transaction = idb.transaction ['data'], 'readwrite'
+        transaction.oncomplete = ()->
+          #TODO?
+        
+        store = transaction.objectStore 'data'
+            
+        req = store.get(name)
+        req.onerror = (evt) ->
+          
+        req.onsuccess = (evt) ->
+          cb evt.target.result.data
     }
