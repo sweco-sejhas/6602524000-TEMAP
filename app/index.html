@@ -53,12 +53,12 @@
                 <div class="object-list-filter">
                   <div class="input-append">
                     <button class="btn filter-item" ng-disabled="scrollItems.positionUnavailable" ng-click=toggleGeoSort()><i ng-class="{true:'icon-ok-sign', false:'icon-minus-sign'}[scrollItems.geoSort]"></i> Geografisk sortering</button>
-                    <input class="filter-item" ng-change="applyTextFilter()" ng-model="scrollItems.filter.text" type="text" placeholder="Sökfilter"></input></div>
+                    <input class="filter-text filter-item" ng-change="applyTextFilter()" ng-model="scrollItems.filter.text" type="text" placeholder="Sökfilter"></input></div>
                 </div>
                 <div style="height:{{scrollItems.topPadSize}}px"></div>
                   <ul class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="1">
                     <li ng-click="selectItem(item)" ng-repeat="item in scrollItems.currentItems | orderBy:n">
-                      <a href="javascript:void(0)"><span>{{item}}</span></a>
+                      <a href="javascript:void(0)"><span>{{item.n}}</span></a>
                     </li>
                   </ul>
                   <div style="height:{{scrollItems.bottomPadSize}}px"></div>

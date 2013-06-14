@@ -37,6 +37,10 @@
   margin-left:10px !important;
 }
 
+.filter-text {
+  width:70px;
+}
+
 .filterable {
   padding-top:60px;
 }
