@@ -2,19 +2,33 @@
 (function() {
   'use strict';
   angular.module('TEMAPApp').factory('geo', function($rootScope) {
-    var locationError, locationUpdate;
-    navigator.geolocation.getCurrentPosition;
+    var iOS, intervalId, locationError, locationUpdate;
+    iOS = navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false;
     locationError = function() {
       return $rootScope.$broadcast('geo::locationUnavailable');
     };
     locationUpdate = function(pos) {
       return $rootScope.$broadcast('geo::locationUpdate', pos);
     };
-    return navigator.geolocation.watchPosition(locationUpdate, locationError, {
-      enableHighAccuracy: true,
-      timeout: 60000,
-      maximumAge: 600000
-    });
+    /*
+      iOS breaks when using watchPosition, so check for ipad/iphone/ipod and use setInterval instead
+    */
+
+    if (iOS) {
+      return intervalId = setInterval(function() {
+        return navigator.geolocation.getCurrentPosition(locationUpdate, locationError, {
+          enableHighAccuracy: true,
+          timeout: 60000,
+          maximumAge: 600000
+        });
+      }, 5000);
+    } else {
+      return navigator.geolocation.watchPosition(locationUpdate, locationError, {
+        enableHighAccuracy: true,
+        timeout: 60000,
+        maximumAge: 600000
+      });
+    }
   });
 
 }).call(this);
