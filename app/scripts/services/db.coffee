@@ -6,7 +6,7 @@ angular.module('TEMAPApp')
     timeoutId = null
     idb = null
     
-    req = indexedDB.open('TEMAP_DB')
+    req = indexedDB.open('TEMAP_DB',2)
    
     #Get hold of the indexed-db object
     req.onsuccess = (evt)-> 
@@ -14,15 +14,15 @@ angular.module('TEMAPApp')
     
     req.onupgradeneeded = (evt) ->
       idb = evt.target.result
-      osVersion = idb.createObjectStore 'version', keyPath:'n'
+      osVersion = idb.createObjectStore 'dataVersion', keyPath:'n'
       osData = idb.createObjectStore 'data', keyPath:'n'
     
     req.onerror = (evt) ->
       console.log 'IndexedDB error: ' + evt.target.errorCode
     
     updateVersion = (name, version, cb) ->
-      transaction = idb.transaction ['version'], 'readwrite'
-      store = transaction.objectStore('version')
+      transaction = idb.transaction ['dataVersion'], 'readwrite'
+      store = transaction.objectStore('dataVersion')
         
       req = store.put 
         n:name
@@ -43,8 +43,8 @@ angular.module('TEMAPApp')
           cb()
        
       needsUpdate: (name, version, update, noUpdate) ->
-        transaction = idb.transaction ['version'], 'readwrite'
-        store = transaction.objectStore('version')
+        transaction = idb.transaction ['dataVersion'], 'readwrite'
+        store = transaction.objectStore('dataVersion')
         
         req = store.get(name)
         req.onerror = (evt) ->

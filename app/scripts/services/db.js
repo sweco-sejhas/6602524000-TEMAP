@@ -5,14 +5,14 @@
     var idb, req, timeoutId, updateVersion;
     timeoutId = null;
     idb = null;
-    req = indexedDB.open('TEMAP_DB');
+    req = indexedDB.open('TEMAP_DB', 2);
     req.onsuccess = function(evt) {
       return idb = req.result;
     };
     req.onupgradeneeded = function(evt) {
       var osData, osVersion;
       idb = evt.target.result;
-      osVersion = idb.createObjectStore('version', {
+      osVersion = idb.createObjectStore('dataVersion', {
         keyPath: 'n'
       });
       return osData = idb.createObjectStore('data', {
@@ -24,8 +24,8 @@
     };
     updateVersion = function(name, version, cb) {
       var store, transaction;
-      transaction = idb.transaction(['version'], 'readwrite');
-      store = transaction.objectStore('version');
+      transaction = idb.transaction(['dataVersion'], 'readwrite');
+      store = transaction.objectStore('dataVersion');
       req = store.put({
         n: name,
         version: version
@@ -49,8 +49,8 @@
       },
       needsUpdate: function(name, version, update, noUpdate) {
         var store, transaction;
-        transaction = idb.transaction(['version'], 'readwrite');
-        store = transaction.objectStore('version');
+        transaction = idb.transaction(['dataVersion'], 'readwrite');
+        store = transaction.objectStore('dataVersion');
         req = store.get(name);
         req.onerror = function(evt) {};
         return req.onsuccess = function(evt) {
