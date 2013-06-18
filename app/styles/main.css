@@ -55,10 +55,11 @@
 
 #header-menu > div > ul > li {
   width:33%;
-  text-align:center;
+  text-align:c§;
 }
 
 .loading-center{
+  font-style:italic;
   position:absolute;
   left:50%;
   top:50%;

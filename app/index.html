@@ -41,7 +41,7 @@
 
     <!-- Add your site or application content here -->
     <div ng-controller="DataUpdateCtrl" ng-switch on="updating">
-      <img class="loading-center" src="styles/ajax-loader.gif" ng-switch-when="true" />
+      <span class="loading-center" ng-switch-when="true"><img src="styles/ajax-loader.gif"/> {{data.getLoadText()}}...</span>
       <div ng-cloak ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
             <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">
@@ -70,9 +70,7 @@
               </div>
             </tab>
             <tab heading="Karta" active="mapTab.active" disabled="mapTab.disabled">
-              <div ng-controller="MapCtrl">
-                <map highlight-marker="data.getSelectedItem()" markers="data.getClosestItems()" update-size="mapTab.updateSize" autosize="#header-menu > div > ul, .object-list-filter"></map>
-              </div>
+              <map highlight-marker="data.getSelectedItem()" markers="data.getClosestItems()" update-size="mapTab.updateSize" autosize="#header-menu > div > ul, .object-list-filter"></map>
             </tab>
         </tabset>
       </div>
@@ -93,6 +91,7 @@
     <script src="scripts/directives/map.js"></script>
     <script src="scripts/controllers/map.js"></script>
     <script src="scripts/services/mergeSort.js"></script>
+    <script src="scripts/services/loadMessage.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
