@@ -55,6 +55,11 @@
   background-color:#2a2a2a;
 }
 
+.nav-tabs > .active > a:hover {
+  background-color:inherit;
+  color:inherit;
+}
+
 #header-menu > div > ul {
   position:fixed;
   width:100%;
@@ -67,6 +72,10 @@
 #header-menu > div > ul > li {
   width:33%;
   text-align:center;
+}
+
+#header-menu > div > ul > li > a:hover{
+  background-color:#000;
 }
 
 .loading-center{
