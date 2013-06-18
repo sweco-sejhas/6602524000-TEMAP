@@ -41,7 +41,7 @@
 
     <!-- Add your site or application content here -->
     <div ng-controller="DataUpdateCtrl" ng-switch on="updating">
-      <span class="loading-center" ng-switch-when="true"><img src="styles/ajax-loader.gif"/> {{data.getLoadText()}}...</span>
+      <span class="loading-center" ng-switch-when="true"><img src="styles/ajax-loader.gif"/> {{loadMessage.getCurrent()}}</span>
       <div ng-cloak ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
             <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">
@@ -89,7 +89,6 @@
     <script src="scripts/services/db.js"></script>
     <script src="scripts/services/geo.js"></script>
     <script src="scripts/directives/map.js"></script>
-    <script src="scripts/controllers/map.js"></script>
     <script src="scripts/services/mergeSort.js"></script>
     <script src="scripts/services/loadMessage.js"></script>
     <!-- endbuild -->

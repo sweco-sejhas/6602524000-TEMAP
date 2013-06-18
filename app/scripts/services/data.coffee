@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('TEMAPApp')
-  .factory 'data', ($rootScope, $http, db, mergeSort) ->
+  .factory 'data', ($rootScope, $http, db, mergeSort, loadMessage) ->
     
     selectedType = null
     closestItems = []
@@ -21,13 +21,17 @@ angular.module('TEMAPApp')
         $rootScope.$broadcast 'data::dataUpdated'
     
     update = (name, version) ->
+      loadMessage.remove 'Kontrollerar version av databas'
+      loadMessage.add 'Uppdaterar databasen'
       $http.get('data/' + name + '.json' + noCache()).then (res)->
         db.initDb ->        
           db.persist name,version, res.data, ->
+            loadMessage.remove 'Uppdaterar databasen'
             fetch name
             
             
     fetch = (name) ->
+      loadMessage.remove 'Kontrollerar version av databas'
       db.getAsArray name,(arr)->
         scope[name] = arr
         broadcast name
@@ -39,6 +43,7 @@ angular.module('TEMAPApp')
           db.initDb ->
             versions = res.data
             for k,v of versions
+              loadMessage.add 'Kontrollerar version av databas'
               db.needsUpdate k,v,update,fetch
               
             return 1
