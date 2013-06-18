@@ -42,7 +42,7 @@
     <!-- Add your site or application content here -->
     <div ng-controller="DataUpdateCtrl" ng-switch on="updating">
       <img class="loading-center" src="styles/ajax-loader.gif" ng-switch-when="true" />
-      <div ng-switch-when="false" ng-controller="TabCtrl">
+      <div ng-cloak ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
             <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">
               <ul ng-controller="ObjektTypCtrl" class="object-list">
