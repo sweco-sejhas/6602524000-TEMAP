@@ -8,7 +8,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title></title>
     <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/bootstrap/css/bootstrap.css" />
@@ -22,9 +23,6 @@
     <script src="components/jquery/jquery-1.10.1.min.js"></script>
     <script src="components/leaflet/dist/leaflet.js"></script>
     <script src="components/angular/angular.js"></script>
-    <script src="components/angular-resource/angular-resource.js"></script>
-    <script src="components/angular-cookies/angular-cookies.js"></script>
-    <script src="components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/infinite-scroll.js"></script>
     <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.4.0-SNAPSHOT.min.js"></script>
     <script src="components/indexed-db-shim/IndexedDBShim.min.js"></script>
@@ -41,7 +39,8 @@
 
     <!-- Add your site or application content here -->
     <div ng-controller="DataUpdateCtrl" ng-switch on="updating">
-      <span class="loading-center" ng-switch-when="true"><img src="styles/ajax-loader.gif"/> {{loadMessage.getCurrent()}}</span>
+      <div ng-cloak class="loading-center" ng-switch-when="true"><img src="styles/ajax-loader.gif"/>
+        <p>{{loadMessage.getCurrent()}}</p></div>
       <div ng-cloak ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
             <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">

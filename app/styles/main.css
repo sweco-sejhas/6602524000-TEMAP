@@ -61,10 +61,8 @@
 .loading-center{
   font-style:italic;
   position:absolute;
-  left:50%;
-  top:50%;
-  margin-left:-16px;
-  margin-top:-16px;
+  top:40%;
+  margin-left:16px;
 }
 
 body {

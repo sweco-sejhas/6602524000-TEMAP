@@ -10,6 +10,6 @@ angular.module('TEMAPApp')
     
     $scope.$on 'data::dataUpdated', (ev)->  
       $scope.$apply ->
-        #$scope.updating = false
+        $scope.updating = false
     
     data.update()
