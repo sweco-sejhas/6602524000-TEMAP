@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('TEMAPApp')
-  .controller 'ObjektCtrl', ($scope, ObjectType, data, db, scrollItems, geo) ->
+  .controller 'ObjektCtrl', ($scope, $timeout, ObjectType, data, db, scrollItems, geo) ->
     $scope.ObjectType = ObjectType
     $scope.scrollItems = scrollItems
     
@@ -17,7 +17,13 @@ angular.module('TEMAPApp')
       
     
     $scope.selectItem = (item) ->
-      1  
+      $scope.mapTab.disabled = false
+      
+      data.setSelectedItem item, ->
+        $timeout ->
+          $scope.mapTab.active = true
+          $timeout ->
+            $scope.mapTab.updateSize = true
     
     $scope.applyTextFilter = ->
       base = scrollItems.getBaseItems()[..]

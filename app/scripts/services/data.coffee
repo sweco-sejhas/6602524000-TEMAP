@@ -1,7 +1,11 @@
 'use strict';
 
 angular.module('TEMAPApp')
-  .factory 'data', ($rootScope, $http, db) ->
+  .factory 'data', ($rootScope, $http, db, mergeSort) ->
+    
+    selectedType = null
+    closestItems = []
+    selectedItem = null
     
     scope = null
     
@@ -38,4 +42,30 @@ angular.module('TEMAPApp')
               db.needsUpdate k,v,update,fetch
               
             return 1
+            
+      setSelectedType: (t) ->
+        selectedType = t
+            
+      setSelectedItem: (item, cb) ->
+        selectedItem = item
+        this.setClosestItems item, cb
+        
+      getSelectedItem: ->
+        selectedItem
+          
+      estimateDistance: (items, base)->
+        for item in items
+          item.dist = (Math.pow (item.la - base.la), 2) + (Math.pow (item.lo - base.lo), 2)
+            
+      setClosestItems: (item, cb) ->
+        candidates = this[selectedType][..]
+        this.estimateDistance candidates, item
+        mergeSort.sort candidates, 'dist', (sorted)->
+          closestItems = sorted[1..101]
+          cb()
+        
+        closestItems = []
+        
+      getClosestItems: () ->
+        closestItems
     }

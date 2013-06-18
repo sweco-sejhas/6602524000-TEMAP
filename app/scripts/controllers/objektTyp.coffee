@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('TEMAPApp')
-  .controller 'ObjektTypCtrl', ($scope, ObjectType, scrollItems, data) ->
+  .controller 'ObjektTypCtrl', ($scope, $timeout, ObjectType, scrollItems, data) ->
     $scope.objectTypes = [
       id:'belysning'
       name:'Belysningsstolpe'
@@ -13,6 +13,7 @@ angular.module('TEMAPApp')
       name:'Nätstation']
       
     $scope.setType = (type) ->
+      data.setSelectedType type.id
       scrollItems.setBaseItems data[type.id]
       scrollItems.filter.text = ''
       
@@ -22,5 +23,8 @@ angular.module('TEMAPApp')
             scrollItems.setBaseItems sorted
         ,true)
       
-      $scope.objTab.active = true
       ObjectType.selected = type.id
+      $scope.objTab.disabled = false
+      
+      $timeout ->
+        $scope.objTab.active = true

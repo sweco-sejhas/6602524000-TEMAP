@@ -4,25 +4,30 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="styles/main.css" />
     <!-- endbuild -->
+    <link rel="stylesheet" href="components/leaflet/dist/leaflet.css" />
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="components/leaflet/dist/leaflet.ie.css" />
+    <![endif]-->
     
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="components/jquery/jquery-1.10.1.min.js"></script>
+    <script src="components/leaflet/dist/leaflet.js"></script>
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-resource/angular-resource.js"></script>
     <script src="components/angular-cookies/angular-cookies.js"></script>
     <script src="components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/infinite-scroll.js"></script>
     <script src="components/ui-bootstrap/ui-bootstrap-tpls-0.4.0-SNAPSHOT.min.js"></script>
-    <script type="text/javascript" src="http://nparashuram.com/IndexedDBShim/dist/IndexedDBShim.min.js"></script>
+    <script src="components/indexed-db-shim/IndexedDBShim.min.js"></script>
   </head>
   <body ng-app="TEMAPApp">
     <!--[if lt IE 7]>
@@ -39,7 +44,7 @@
       <img class="loading-center" src="styles/ajax-loader.gif" ng-switch-when="true" />
       <div ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
-            <tab heading="Objekttyp" active="typeTab.active">
+            <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">
               <ul ng-controller="ObjektTypCtrl" class="object-list">
                 <li ng-click="setType(t)" ng-repeat="t in objectTypes">
                   <a href="javascript:void(0)">
@@ -48,7 +53,7 @@
                 </li>
               </ul>
             </tab>
-            <tab heading="Objekt" active="objTab.active">
+            <tab heading="Objekt" active="objTab.active" disabled="objTab.disabled">
               <div ng-controller="ObjektCtrl" ng-switch on="ObjectType.selected">
                 <div class="object-list-filter">
                   <div class="input-append">
@@ -64,7 +69,11 @@
                   <div style="height:{{scrollItems.bottomPadSize}}px"></div>
               </div>
             </tab>
-            <tab heading="Karta" active="mapTab.active"><div id="map" autosize="#header-menu > div > ul, .object-list-filter">Kartan</div></tab>
+            <tab heading="Karta" active="mapTab.active" disabled="mapTab.disabled">
+              <div ng-controller="MapCtrl">
+                <map highlight-marker="data.getSelectedItem()" markers="data.getClosestItems()" update-size="mapTab.updateSize" autosize="#header-menu > div > ul, .object-list-filter"></map>
+              </div>
+            </tab>
         </tabset>
       </div>
     </div>
@@ -81,6 +90,9 @@
     <script src="scripts/controllers/dataUpdate.js"></script>
     <script src="scripts/services/db.js"></script>
     <script src="scripts/services/geo.js"></script>
+    <script src="scripts/directives/map.js"></script>
+    <script src="scripts/controllers/map.js"></script>
+    <script src="scripts/services/mergeSort.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

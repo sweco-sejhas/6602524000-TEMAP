@@ -3,13 +3,17 @@
   'use strict';
   angular.module('TEMAPApp').controller('TabCtrl', function($scope) {
     $scope.typeTab = {
-      active: true
+      active: true,
+      disabled: false
     };
     $scope.objTab = {
-      active: false
+      active: false,
+      disabled: true
     };
     return $scope.mapTab = {
-      active: false
+      active: false,
+      disabled: true,
+      updateSize: false
     };
   });
 
