@@ -16,7 +16,8 @@
         map = new L.Map(element[0], {
           faeAnimation: false,
           zoomAnimation: false,
-          markerZoomAnimation: false
+          markerZoomAnimation: false,
+          touchZoom: false
         });
         map.setView([55.37246, 13.15874], 16);
         tiles = new L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -26,7 +27,7 @@
         group = new L.layerGroup();
         group.addTo(map);
         marker = null;
-        highlightIcon = new L.icon({
+        highlightIcon = new L.AnchorIcon({
           iconUrl: 'styles/img/power.png',
           iconSize: [32, 37]
         });

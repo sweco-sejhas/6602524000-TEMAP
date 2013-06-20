@@ -36,9 +36,8 @@
 }
 
 .filter-text {
-  width:70px;
-  position:relative;
-  top:5px;
+  width:80px;
+  height:2.3em !important;
 }
 
 .filterable {

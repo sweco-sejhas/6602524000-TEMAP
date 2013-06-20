@@ -14,6 +14,7 @@ angular.module('TEMAPApp')
         faeAnimation:false
         zoomAnimation:false
         markerZoomAnimation:false
+        touchZoom:false
       
       map.setView [55.37246, 13.15874],16
       
@@ -27,7 +28,7 @@ angular.module('TEMAPApp')
       
       marker = null
       
-      highlightIcon = new L.icon 
+      highlightIcon = new L.AnchorIcon 
         iconUrl:'styles/img/power.png'
         iconSize:[32, 37]
       
