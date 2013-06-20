@@ -10,7 +10,10 @@ angular.module('TEMAPApp')
       markers:'='
       highlightMarker:'='
     link: (scope, element, attrs) ->
-      map = new L.Map element[0]
+      map = new L.Map element[0],
+        faeAnimation:false
+        zoomAnimation:false
+        markerZoomAnimation:false
       
       map.setView [55.37246, 13.15874],16
       
