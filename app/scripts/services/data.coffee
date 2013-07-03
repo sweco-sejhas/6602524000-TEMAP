@@ -24,10 +24,10 @@ angular.module('TEMAPApp')
       loadMessage.remove 'Kontrollerar version av databas'
       loadMessage.add 'Uppdaterar databasen'
       $http.get('data/' + name + '.json' + noCache()).then (res)->
-        db.initDb ->        
-          db.persist name,version, res.data, ->
-            loadMessage.remove 'Uppdaterar databasen'
-            fetch name
+          db.initDb ->     
+            db.persist name,version, res.data, ->
+              loadMessage.remove 'Uppdaterar databasen'
+              fetch name
             
             
     fetch = (name) ->
@@ -54,6 +54,9 @@ angular.module('TEMAPApp')
       setSelectedItem: (item, cb) ->
         selectedItem = item
         this.setClosestItems item, cb
+        
+      getDataArray: ->
+        return this[selectedType]
         
       getSelectedItem: ->
         selectedItem

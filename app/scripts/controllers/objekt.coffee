@@ -28,6 +28,7 @@ angular.module('TEMAPApp')
     $scope.applyTextFilter = ->
       base = scrollItems.getBaseItems()[..]
       result = []
+      
       re = new RegExp $scope.scrollItems.filter.text, 'i'
       
       for item in base
@@ -36,10 +37,10 @@ angular.module('TEMAPApp')
           
       scrollItems.setItems result
       
-      
     $scope.toggleGeoSort = ->
-      scrollItems.toggleGeoSort((sorted)->
+      scrollItems.toggleGeoSort()
+      ###scrollItems.toggleGeoSort((sorted)->
         $scope.$apply ->
           scrollItems.setBaseItems sorted
           $scope.applyTextFilter()
-      )
+      )###

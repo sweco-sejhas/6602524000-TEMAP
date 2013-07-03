@@ -10,12 +10,12 @@
       return idb = req.result;
     };
     req.onupgradeneeded = function(evt) {
-      var osData, osVersion;
-      idb = evt.target.result;
-      osVersion = idb.createObjectStore('dataVersion', {
+      var db, osData, osVersion;
+      db = evt.target.result;
+      osVersion = db.createObjectStore('dataVersion', {
         keyPath: 'n'
       });
-      return osData = idb.createObjectStore('data', {
+      return osData = db.createObjectStore('data', {
         keyPath: 'n'
       });
     };
@@ -52,7 +52,9 @@
         transaction = idb.transaction(['dataVersion'], 'readwrite');
         store = transaction.objectStore('dataVersion');
         req = store.get(name);
-        req.onerror = function(evt) {};
+        req.onerror = function(evt) {
+          return console.log('IndexedDB error: ' + evt.target.errorCode);
+        };
         return req.onsuccess = function(evt) {
           if ((evt.target.result == null) || evt.target.result.version !== version) {
             return update(name, version);

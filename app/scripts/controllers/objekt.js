@@ -40,12 +40,14 @@
       return scrollItems.setItems(result);
     };
     return $scope.toggleGeoSort = function() {
-      return scrollItems.toggleGeoSort(function(sorted) {
-        return $scope.$apply(function() {
-          scrollItems.setBaseItems(sorted);
-          return $scope.applyTextFilter();
-        });
-      });
+      return scrollItems.toggleGeoSort();
+      /*scrollItems.toggleGeoSort((sorted)->
+        $scope.$apply ->
+          scrollItems.setBaseItems sorted
+          $scope.applyTextFilter()
+      )
+      */
+
     };
   });
 

@@ -16,6 +16,16 @@ angular.module('TEMAPApp')
         markerZoomAnimation:false
         touchZoom:false
       
+      platform = 'other'
+      if navigator.userAgent.match '/Android/i'
+        platform = 'android'
+      else if navigator.userAgent.match '/iPhone|iPad|iPod/i'
+        platform = 'ios'
+      else if navigator.userAgent.match '/Windows Phone/'
+        platform = 'wp'
+        
+      scope.platform = platform
+      
       map.setView [55.37246, 13.15874],16
       
       tiles = new L.tileLayer 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
@@ -28,24 +38,25 @@ angular.module('TEMAPApp')
       
       marker = null
       
-      highlightIcon = new L.AnchorIcon 
-        iconUrl:'styles/img/power.png'
-        iconSize:[32, 37]
-      
-      markerIcon = new L.icon 
-        iconUrl:'styles/img/bally.png'
-        iconSize:[32, 32]
-      
       scope.$watch 'updateSize', (val)->
         if val
           map.invalidateSize false
           scope.updateSize = false
-          
+      
+      constructHref = (lat, lon)->
+        switch scope.platform
+          when 'ios' then ('http://maps.apple.com/?daddr=' + lat + ',' + lon)
+          when 'wp' then ('ms-drive-to:?destination.latitude=' + lat + '&destination.longitude=' + lon)
+          else ('http://maps.google.com/?daddr=' + lat + ',' + lon)
+
       scope.$watch 'markers', (val)->
         group.clearLayers()
         
         for item in val
-          itemMarker = new L.marker [item.la, item.lo], icon:markerIcon
+          itemMarker = new L.marker [item.la, item.lo], icon:new L.AnchorIcon 
+            iconUrl:'styles/img/bally.png'
+            iconSize:[32, 32]
+            href:constructHref item.la, item.lo
           group.addLayer itemMarker
         
         
@@ -55,7 +66,10 @@ angular.module('TEMAPApp')
           
         if val
           marker = new L.marker [val.la, val.lo], 
-            icon:highlightIcon
+            icon:new L.AnchorIcon 
+              iconUrl:'styles/img/power.png'
+              iconSize:[32, 37],
+              href:constructHref val.la, val.lo
             zIndexOffset:1000
           marker.addTo map
           map.setView new L.LatLng(val.la, val.lo), 18, true

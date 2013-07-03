@@ -13,9 +13,9 @@ angular.module('TEMAPApp')
       idb = req.result
     
     req.onupgradeneeded = (evt) ->
-      idb = evt.target.result
-      osVersion = idb.createObjectStore 'dataVersion', keyPath:'n'
-      osData = idb.createObjectStore 'data', keyPath:'n'
+      db = evt.target.result
+      osVersion = db.createObjectStore 'dataVersion', keyPath:'n'
+      osData = db.createObjectStore 'data', keyPath:'n'
     
     req.onerror = (evt) ->
       console.log 'IndexedDB error: ' + evt.target.errorCode
@@ -45,16 +45,17 @@ angular.module('TEMAPApp')
       needsUpdate: (name, version, update, noUpdate) ->
         transaction = idb.transaction ['dataVersion'], 'readwrite'
         store = transaction.objectStore('dataVersion')
-        
         req = store.get(name)
+        
         req.onerror = (evt) ->
+          console.log 'IndexedDB error: ' + evt.target.errorCode
           
         req.onsuccess = (evt) ->
           #Compare versions
           if !evt.target.result? || evt.target.result.version != version
-            update(name, version)
+            update name, version
           else
-            noUpdate(name)
+            noUpdate name
       
       persist: (name, version, data, cb) ->
         transaction = idb.transaction ['data'], 'readwrite'

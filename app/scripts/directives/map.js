@@ -12,13 +12,22 @@
         highlightMarker: '='
       },
       link: function(scope, element, attrs) {
-        var group, highlightIcon, map, marker, markerIcon, tiles;
+        var constructHref, group, map, marker, platform, tiles;
         map = new L.Map(element[0], {
           faeAnimation: false,
           zoomAnimation: false,
           markerZoomAnimation: false,
           touchZoom: false
         });
+        platform = 'other';
+        if (navigator.userAgent.match('/Android/i')) {
+          platform = 'android';
+        } else if (navigator.userAgent.match('/iPhone|iPad|iPod/i')) {
+          platform = 'ios';
+        } else if (navigator.userAgent.match('/Windows Phone/')) {
+          platform = 'wp';
+        }
+        scope.platform = platform;
         map.setView([55.37246, 13.15874], 16);
         tiles = new L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -27,20 +36,22 @@
         group = new L.layerGroup();
         group.addTo(map);
         marker = null;
-        highlightIcon = new L.AnchorIcon({
-          iconUrl: 'styles/img/power.png',
-          iconSize: [32, 37]
-        });
-        markerIcon = new L.icon({
-          iconUrl: 'styles/img/bally.png',
-          iconSize: [32, 32]
-        });
         scope.$watch('updateSize', function(val) {
           if (val) {
             map.invalidateSize(false);
             return scope.updateSize = false;
           }
         });
+        constructHref = function(lat, lon) {
+          switch (scope.platform) {
+            case 'ios':
+              return 'http://maps.apple.com/?daddr=' + lat + ',' + lon;
+            case 'wp':
+              return 'ms-drive-to:?destination.latitude=' + lat + '&destination.longitude=' + lon;
+            default:
+              return 'http://maps.google.com/?daddr=' + lat + ',' + lon;
+          }
+        };
         scope.$watch('markers', function(val) {
           var item, itemMarker, _i, _len, _results;
           group.clearLayers();
@@ -48,7 +59,11 @@
           for (_i = 0, _len = val.length; _i < _len; _i++) {
             item = val[_i];
             itemMarker = new L.marker([item.la, item.lo], {
-              icon: markerIcon
+              icon: new L.AnchorIcon({
+                iconUrl: 'styles/img/bally.png',
+                iconSize: [32, 32],
+                href: constructHref(item.la, item.lo)
+              })
             });
             _results.push(group.addLayer(itemMarker));
           }
@@ -60,7 +75,11 @@
           }
           if (val) {
             marker = new L.marker([val.la, val.lo], {
-              icon: highlightIcon,
+              icon: new L.AnchorIcon({
+                iconUrl: 'styles/img/power.png',
+                iconSize: [32, 37],
+                href: constructHref(val.la, val.lo)
+              }),
               zIndexOffset: 1000
             });
             marker.addTo(map);

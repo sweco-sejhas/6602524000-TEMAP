@@ -60,6 +60,9 @@
         selectedItem = item;
         return this.setClosestItems(item, cb);
       },
+      getDataArray: function() {
+        return this[selectedType];
+      },
       getSelectedItem: function() {
         return selectedItem;
       },
