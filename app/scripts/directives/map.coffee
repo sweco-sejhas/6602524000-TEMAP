@@ -10,12 +10,6 @@ angular.module('TEMAPApp')
       markers:'='
       highlightMarker:'='
     link: (scope, element, attrs) ->
-      map = new L.Map element[0],
-        faeAnimation:false
-        zoomAnimation:false
-        markerZoomAnimation:false
-        touchZoom:false
-      
       platform = 'other'
       if navigator.userAgent.match '/Android/i'
         platform = 'android'
@@ -23,9 +17,15 @@ angular.module('TEMAPApp')
         platform = 'ios'
       else if navigator.userAgent.match '/Windows Phone/'
         platform = 'wp'
-        
+
       scope.platform = platform
-      
+        
+      map = new L.Map element[0],
+        fadeAnimation:platform != 'wp'
+        zoomAnimation:platform != 'wp'
+        markerZoomAnimation:platform != 'wp'
+        touchZoom:true#platform != 'wp'
+
       map.setView [55.37246, 13.15874],16
       
       tiles = new L.tileLayer 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',

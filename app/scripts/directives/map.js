@@ -13,12 +13,6 @@
       },
       link: function(scope, element, attrs) {
         var constructHref, group, map, marker, platform, tiles;
-        map = new L.Map(element[0], {
-          faeAnimation: false,
-          zoomAnimation: false,
-          markerZoomAnimation: false,
-          touchZoom: false
-        });
         platform = 'other';
         if (navigator.userAgent.match('/Android/i')) {
           platform = 'android';
@@ -28,6 +22,12 @@
           platform = 'wp';
         }
         scope.platform = platform;
+        map = new L.Map(element[0], {
+          fadeAnimation: platform !== 'wp',
+          zoomAnimation: platform !== 'wp',
+          markerZoomAnimation: platform !== 'wp',
+          touchZoom: true
+        });
         map.setView([55.37246, 13.15874], 16);
         tiles = new L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

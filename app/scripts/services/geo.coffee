@@ -14,15 +14,16 @@ angular.module('TEMAPApp')
     ###
       iOS breaks when using watchPosition, so check for ipad/iphone/ipod and use setInterval instead
     ###
-    if iOS  
-      intervalId = setInterval ->
-        navigator.geolocation.getCurrentPosition locationUpdate, locationError,
+    if navigator.geolocation
+      if iOS
+        intervalId = setInterval ->
+          navigator.geolocation.getCurrentPosition locationUpdate, locationError,
+            enableHighAccuracy:true
+            timeout:60000
+            maximumAge:600000
+        ,5000
+      else
+        navigator.geolocation.watchPosition locationUpdate,locationError,
           enableHighAccuracy:true
           timeout:60000
           maximumAge:600000
-      ,5000
-    else
-      navigator.geolocation.watchPosition locationUpdate,locationError,
-        enableHighAccuracy:true
-        timeout:60000
-        maximumAge:600000
