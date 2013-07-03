@@ -29,38 +29,6 @@
       getBaseItems: function() {
         return baseItems;
       },
-      executeNameSort: function(cb) {
-        return setTimeout(function() {
-          return cb(data.getDataArray());
-        }, 0);
-      },
-      executeGeoSort: function(cb) {
-        var sorted;
-        sorted = baseItems.slice(0);
-        /*max = Number.MAX_VALUE
-        count = 0
-        
-        result = []
-        
-        for item in sorted
-          if item.dist < max
-            max = item.dist
-            
-          if count < 100
-            result.push item
-          else if item.dist < max
-            result.push item
-        */
-
-        /*setTimeout ->
-          cb (Heap.nsmallest sorted,50,comp),
-         ,0
-        */
-
-        return setTimeout(function() {
-          return cb(sorted);
-        }, 0);
-      },
       estimateDistance: function() {
         var item, _i, _len, _results;
         _results = [];
@@ -80,13 +48,6 @@
         } else {
           return this.setItems(baseItems.slice(0));
         }
-        /*if this.geoSort
-          this.estimateDistance()
-          this.executeGeoSort(cb)
-        else
-          this.executeNameSort(cb)
-        */
-
       },
       setLocation: function(pos) {
         this.positionUnavailable = false;
@@ -95,24 +56,29 @@
           return this.estimateDistance();
         }
       },
-      setItems: function(arr) {
+      pickNClosest: function(nbr) {
         var count, currItems, i, item, _i, _ref;
+        currItems = [];
+        count = 0;
+        for (i = _i = _ref = items.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
+          item = items[i];
+          if (count < nbr) {
+            count++;
+            Heap.insort(currItems, item, null, null, comp);
+            items.splice(i, 1);
+          } else if (item.dist < currItems[currItems.length - 1].dist) {
+            Heap.insort(currItems, item, null, null, comp);
+            currItems.pop();
+            items.splice(i, 1);
+          }
+        }
+        return currItems;
+      },
+      setItems: function(arr) {
+        var currItems;
         items = arr;
         if (this.geoSort) {
-          count = 0;
-          currItems = [];
-          for (i = _i = _ref = items.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
-            item = items[i];
-            if (count < numberItems) {
-              count++;
-              Heap.insort(currItems, item, null, null, comp);
-              items.splice(i, 1);
-            } else if (item.dist < currItems[currItems.length - 1].dist) {
-              Heap.insort(currItems, item, null, null, comp);
-              currItems.pop();
-              items.splice(i, 1);
-            }
-          }
+          currItems = this.pickNClosest(numberItems);
           this.currentItems = currItems;
         } else {
           end = numberItems;
@@ -128,7 +94,11 @@
         return this.setItems(baseItems.slice(0));
       },
       loadMore: function(ev) {
-        return this.currentItems = items.slice(0, +(end += numberItems) + 1 || 9e9);
+        if (this.geoSort) {
+          return Array.prototype.push.apply(this.currentItems, this.pickNClosest(numberItems));
+        } else {
+          return this.currentItems = items.slice(0, +(end += numberItems) + 1 || 9e9);
+        }
       }
     };
   });
