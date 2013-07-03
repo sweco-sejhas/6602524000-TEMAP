@@ -17,18 +17,16 @@
     });
     $scope.selectItem = function(item) {
       $scope.mapTab.disabled = false;
-      return data.setSelectedItem(item, function() {
+      data.setSelectedItem(item);
+      return $timeout(function() {
+        $scope.mapTab.active = true;
         return $timeout(function() {
-          $scope.mapTab.active = true;
-          return $timeout(function() {
-            return $scope.mapTab.updateSize = true;
-          });
+          return $scope.mapTab.updateSize = true;
         });
       });
     };
-    $scope.applyTextFilter = function() {
-      var base, item, re, result, _i, _len;
-      base = scrollItems.getBaseItems().slice(0);
+    $scope.filterArray = function(base) {
+      var item, re, result, _i, _len;
       result = [];
       re = new RegExp($scope.scrollItems.filter.text, 'i');
       for (_i = 0, _len = base.length; _i < _len; _i++) {
@@ -37,17 +35,21 @@
           result.push(item);
         }
       }
-      return scrollItems.setItems(result);
+      return result;
+    };
+    $scope.applyTextFilter = function() {
+      var base;
+      base = scrollItems.getBaseItems().slice(0);
+      return scrollItems.setItems($scope.filterArray(base));
     };
     return $scope.toggleGeoSort = function() {
-      return scrollItems.toggleGeoSort();
-      /*scrollItems.toggleGeoSort((sorted)->
-        $scope.$apply ->
-          scrollItems.setBaseItems sorted
-          $scope.applyTextFilter()
-      )
-      */
-
+      var items;
+      if (scrollItems.toggleGeoSort()) {
+        items = scrollItems.getItems();
+      } else {
+        items = scrollItems.getBaseItems().slice(0);
+      }
+      return scrollItems.setItems($scope.filterArray(items));
     };
   });
 

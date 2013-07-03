@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('TEMAPApp')
-  .factory 'data', ($rootScope, $http, db, mergeSort, loadMessage) ->
+  .factory 'data', ($rootScope, $http, db, loadMessage) ->
     
     selectedType = null
     closestItems = []
@@ -11,6 +11,14 @@ angular.module('TEMAPApp')
     
     expectedcount = 3
     loadcount = 0
+    
+    comp = (x,y) ->
+      if x.dist < y.dist
+        -1
+      else if x.dist > y.dist
+        1
+      else
+        0
     
     noCache = () ->
       '?nocache=' + (new Date()).getTime()
@@ -51,9 +59,9 @@ angular.module('TEMAPApp')
       setSelectedType: (t) ->
         selectedType = t
             
-      setSelectedItem: (item, cb) ->
+      setSelectedItem: (item) ->
         selectedItem = item
-        this.setClosestItems item, cb
+        this.setClosestItems item
         
       getDataArray: ->
         return this[selectedType]
@@ -65,14 +73,27 @@ angular.module('TEMAPApp')
         for item in items
           item.dist = (Math.pow (item.la - base.la), 2) + (Math.pow (item.lo - base.lo), 2)
             
-      setClosestItems: (item, cb) ->
+      setClosestItems: (item) ->
         candidates = this[selectedType][..]
         this.estimateDistance candidates, item
-        mergeSort.sort candidates, 'dist', (sorted)->
-          closestItems = sorted[1..101]
-          cb()
+        closestItems = this.pickNClosest 100, candidates
         
-        closestItems = []
+      pickNClosest: (nbr, items) ->
+        currItems = []
+        count = 0
+        for i in [items.length-1..0]
+            item = items[i]
+            if count < nbr
+              count++
+              Heap.insort currItems, item,null,null,comp
+              items.splice i,1
+              
+            else if item.dist < currItems[currItems.length-1].dist
+              Heap.insort currItems, item,null,null,comp
+              currItems.pop()
+              items.splice i,1
+              
+        currItems
         
       getClosestItems: () ->
         closestItems

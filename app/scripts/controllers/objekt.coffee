@@ -15,18 +15,15 @@ angular.module('TEMAPApp')
         scrollItems.setLocation ev.coords
       )
       
-    
     $scope.selectItem = (item) ->
       $scope.mapTab.disabled = false
-      
-      data.setSelectedItem item, ->
+      data.setSelectedItem item
+      $timeout ->
+        $scope.mapTab.active = true
         $timeout ->
-          $scope.mapTab.active = true
-          $timeout ->
-            $scope.mapTab.updateSize = true
+          $scope.mapTab.updateSize = true
     
-    $scope.applyTextFilter = ->
-      base = scrollItems.getBaseItems()[..]
+    $scope.filterArray = (base) ->
       result = []
       
       re = new RegExp $scope.scrollItems.filter.text, 'i'
@@ -35,12 +32,16 @@ angular.module('TEMAPApp')
         if item.n.match re
           result.push item
           
-      scrollItems.setItems result
+      result
+    
+    $scope.applyTextFilter = ->
+      base = scrollItems.getBaseItems()[..]    
+      scrollItems.setItems $scope.filterArray base
       
     $scope.toggleGeoSort = ->
-      scrollItems.toggleGeoSort()
-      ###scrollItems.toggleGeoSort((sorted)->
-        $scope.$apply ->
-          scrollItems.setBaseItems sorted
-          $scope.applyTextFilter()
-      )###
+      if scrollItems.toggleGeoSort()
+        items = scrollItems.getItems()
+      else
+        items = scrollItems.getBaseItems()[...]
+        
+      scrollItems.setItems $scope.filterArray items
