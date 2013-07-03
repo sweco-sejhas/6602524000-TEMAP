@@ -21,9 +21,9 @@ angular.module('TEMAPApp')
       scope.platform = platform
         
       map = new L.Map element[0],
-        fadeAnimation:platform != 'wp'
-        zoomAnimation:platform != 'wp'
-        markerZoomAnimation:platform != 'wp'
+        fadeAnimation:platform != 'wp' && platform != 'android'
+        zoomAnimation:platform != 'wp' && platform != 'android'
+        markerZoomAnimation:platform != 'wp' && platform != 'android'
         touchZoom:true#platform != 'wp'
 
       map.setView [55.37246, 13.15874],16
