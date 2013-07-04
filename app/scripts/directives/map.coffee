@@ -11,11 +11,11 @@ angular.module('TEMAPApp')
       highlightMarker:'='
     link: (scope, element, attrs) ->
       platform = 'other'
-      if navigator.userAgent.match '/Android/i'
+      if navigator.userAgent.match /Android/i
         platform = 'android'
-      else if navigator.userAgent.match '/iPhone|iPad|iPod/i'
+      else if navigator.userAgent.match /iPhone|iPad|iPod/i
         platform = 'ios'
-      else if navigator.userAgent.match '/Windows Phone/'
+      else if navigator.userAgent.match /Windows Phone/
         platform = 'wp'
 
       scope.platform = platform
