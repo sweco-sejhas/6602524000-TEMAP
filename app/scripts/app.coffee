@@ -3,7 +3,7 @@
 TEMAPApp = angular.module 'TEMAPApp', ['ui.bootstrap','infinite-scroll']
 window.TEMAPApp = TEMAPApp
 
-TEMAPApp.factory 'ObjectType', ->
+TEMAPApp.factory 'ObjectType', (geo)->
   selected:null
     
 

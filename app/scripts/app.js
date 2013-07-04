@@ -7,7 +7,7 @@
 
   window.TEMAPApp = TEMAPApp;
 
-  TEMAPApp.factory('ObjectType', function() {
+  TEMAPApp.factory('ObjectType', function(geo) {
     return {
       selected: null
     };
