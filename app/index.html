@@ -47,7 +47,7 @@
       <div ng-cloak ng-switch-when="false" ng-controller="TabCtrl">
         <tabset id="header-menu">
             <tab heading="Objekttyp" active="typeTab.active" disabled="typeTab.disabled">
-              <ul ng-controller="ObjektTypCtrl" class="object-list">
+              <ul ng-controller="ObjektTypCtrl" class="object-list" autosize="#header-menu > div > ul, .object-list-filter">
                 <li ng-click="setType(t)" ng-repeat="t in objectTypes">
                   <a href="javascript:void(0)">
                     <span>{{t.name}}</span>
@@ -61,17 +61,15 @@
                   <button class="btn filter-item" type="button" ng-disabled="scrollItems.positionUnavailable" ng-click=toggleGeoSort()> Geografisk sortering <i ng-class="{true:'icon-ok-sign', false:'icon-minus-sign'}[scrollItems.geoSort]"></i></button>
                   <input class="filter-text filter-item" placeholder="Sökfilter" ng-change="applyTextFilter()" ng-model="scrollItems.filter.text" type="text"/>
                 </div>
-                <div style="height:{{scrollItems.topPadSize}}px"></div>
-                  <ul class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="1">
-                    <li ng-click="selectItem(item)" ng-repeat="item in scrollItems.currentItems">
-                      <a href="javascript:void(0)"><span>{{item.n}}</span></a>
-                    </li>
-                  </ul>
-                  <div style="height:{{scrollItems.bottomPadSize}}px"></div>
+                <ul style="overflow-y:scroll" class="object-list filterable" infinite-scroll="scrollItems.loadMore($event)" infinite-scroll-distance="1" autosize="#header-menu > div > ul, .object-list-filter">
+                  <li ng-click="selectItem(item)" ng-repeat="item in scrollItems.currentItems">
+                    <a href="javascript:void(0)"><span>{{item.n}}</span></a>
+                  </li>
+                </ul>
               </div>
             </tab>
             <tab heading="Karta" active="mapTab.active" disabled="mapTab.disabled">
-              <map highlight-marker="data.getSelectedItem()" markers="data.getClosestItems()" update-size="mapTab.updateSize" autosize="#header-menu > div > ul, .object-list-filter"></map>
+              <map highlight-marker="data.getSelectedItem()" markers="data.getClosestItems()" update-size="mapTab.updateSize" autosize="#header-menu > div > ul"></map>
             </tab>
         </tabset>
       </div>

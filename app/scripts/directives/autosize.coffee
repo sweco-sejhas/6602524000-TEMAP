@@ -11,9 +11,9 @@ TEMAPApp.directive 'autosize', ($window) ->
     resizor = ->
       $scope.$apply ->
           height = 0
-          for el in elems
-            if el.is ':visible'
-              height += el.outerHeight true
+          for selector in selectors
+            el = ($ selector)            
+            height += el.outerHeight true
               
           element.height ($window.innerHeight - height)
           

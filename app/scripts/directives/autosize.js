@@ -14,11 +14,10 @@
         return $scope.$apply(function() {
           var el, height, _j, _len1;
           height = 0;
-          for (_j = 0, _len1 = elems.length; _j < _len1; _j++) {
-            el = elems[_j];
-            if (el.is(':visible')) {
-              height += el.outerHeight(true);
-            }
+          for (_j = 0, _len1 = selectors.length; _j < _len1; _j++) {
+            selector = selectors[_j];
+            el = $(selector);
+            height += el.outerHeight(true);
           }
           return element.height($window.innerHeight - height);
         });

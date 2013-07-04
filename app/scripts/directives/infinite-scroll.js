@@ -28,10 +28,11 @@
             });
           }
           handler = function() {
-            var elementBottom, remaining, shouldScroll, windowBottom;
-            windowBottom = $window.height() + $window.scrollTop();
-            elementBottom = elem.offset().top + elem.height();
-            remaining = elementBottom - windowBottom;
+            var elemHeight, elemScroll, remaining, scrollHeight, shouldScroll;
+            scrollHeight = elem[0].scrollHeight;
+            elemHeight = elem.height();
+            elemScroll = elem.scrollTop();
+            remaining = scrollHeight - elemScroll - elemHeight;
             shouldScroll = remaining <= $window.height() * scrollDistance;
             if (shouldScroll && scrollEnabled) {
               if ($rootScope.$$phase) {
@@ -43,9 +44,9 @@
               return checkWhenEnabled = true;
             }
           };
-          $window.on('scroll', handler);
+          elem.on('scroll', handler);
           scope.$on('$destroy', function() {
-            return $window.off('scroll', handler);
+            return elem.off('scroll', handler);
           });
           return $timeout((function() {
             if (attrs.infiniteScrollImmediateCheck) {

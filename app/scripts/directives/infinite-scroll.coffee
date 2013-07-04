@@ -35,9 +35,16 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
     # with a boolean that is set to true when the function is
     # called in order to throttle the function call.
     handler = ->
-      windowBottom = $window.height() + $window.scrollTop()
-      elementBottom = elem.offset().top + elem.height()
-      remaining = elementBottom - windowBottom
+      scrollHeight = elem[0].scrollHeight
+      elemHeight = elem.height()
+      elemScroll = elem.scrollTop()
+      
+      
+      #windowBottom = $window.height() + $window.scrollTop()
+      #elementBottom = elem.offset().top + elem.height()
+
+      remaining = scrollHeight - elemScroll - elemHeight
+
       shouldScroll = remaining <= $window.height() * scrollDistance
 
       if shouldScroll && scrollEnabled
@@ -48,9 +55,9 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
       else if shouldScroll
         checkWhenEnabled = true
 
-    $window.on 'scroll', handler
+    elem.on 'scroll', handler
     scope.$on '$destroy', ->
-      $window.off 'scroll', handler
+      elem.off 'scroll', handler
 
     $timeout (->
       if attrs.infiniteScrollImmediateCheck
