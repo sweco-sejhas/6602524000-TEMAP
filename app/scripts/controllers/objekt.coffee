@@ -1,13 +1,13 @@
 'use strict'
 
 angular.module('TEMAPApp')
-  .controller 'ObjektCtrl', ($scope, $timeout, ObjectType, data, db, scrollItems, geo) ->
+  .controller 'ObjektCtrl', ($scope, $timeout, ObjectType, data, db, scrollItems) ->
     $scope.ObjectType = ObjectType
     $scope.scrollItems = scrollItems
     
     scrollItems.filter = text:''
     
-    $scope.$on 'data::dataUpdated', (scope)->
+    $scope.$on 'data::dataUpdated', ()->
       $scope.$apply()
       
     $scope.$on 'geo::locationUpdate', (scope, ev)->

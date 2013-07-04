@@ -5,7 +5,7 @@
     $scope.updating = true;
     $scope.data = data;
     $scope.loadMessage = loadMessage;
-    $scope.$on('data::dataUpdated', function(ev) {
+    $scope.$on('data::dataUpdated', function() {
       return $scope.$apply(function() {
         return $scope.updating = false;
       });

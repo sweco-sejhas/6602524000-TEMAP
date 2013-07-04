@@ -8,7 +8,7 @@ angular.module('TEMAPApp')
     
     $scope.loadMessage = loadMessage
     
-    $scope.$on 'data::dataUpdated', (ev)->  
+    $scope.$on 'data::dataUpdated', ()->  
       $scope.$apply ->
         $scope.updating = false
     

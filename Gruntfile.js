@@ -91,7 +91,8 @@ module.exports = function (grunt) {
     },
     jshint: {
       options: {
-        jshintrc: '.jshintrc'
+        jshintrc: '.jshintrc',
+        boss:true
       },
       all: [
         'Gruntfile.js',
@@ -252,8 +253,9 @@ module.exports = function (grunt) {
             '*.{ico,txt}',
             '.htaccess',
             'components/**/*',
+            'data/**',
             'images/{,*/}*.{gif,webp}',
-            'styles/fonts/*'
+            'styles/**/*'
           ]
         }]
       }
