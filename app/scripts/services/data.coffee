@@ -3,13 +3,14 @@
 angular.module('TEMAPApp')
   .factory 'data', ($rootScope, $http, db, loadMessage) ->
     
+    scope = null
     selectedType = null
     closestItems = []
     selectedItem = null
     
-    scope = null
-    
-    expectedcount = 3
+    objectSources = ['belysning', 'kabelskap', 'natstationer']
+   
+    expectedcount = objectSources.length
     loadcount = 0
     
     comp = (x,y) ->
@@ -47,14 +48,18 @@ angular.module('TEMAPApp')
     {     
       update: () ->
         scope = this
-        $http.get('data/version.json' + noCache()).then (res)->
-          db.initDb ->
-            versions = res.data
-            for k,v of versions
-              loadMessage.add 'Kontrollerar version av databas'
-              db.needsUpdate k,v,update,fetch
+        
+        for source in objectSources
+          $http.get('data/' + source + '_version.json' + noCache()).then (res)->
+            db.initDb ->
+              version = res.data.version
+              id = res.data.id
               
-            return 1
+              loadMessage.add 'Kontrollerar version av databas'
+
+              db.needsUpdate id,version,update,fetch
+                
+              return 0
             
       setSelectedType: (t) ->
         selectedType = t

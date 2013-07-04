@@ -2,12 +2,13 @@
 (function() {
   'use strict';
   angular.module('TEMAPApp').factory('data', function($rootScope, $http, db, loadMessage) {
-    var broadcast, closestItems, comp, expectedcount, fetch, loadcount, noCache, scope, selectedItem, selectedType, update;
+    var broadcast, closestItems, comp, expectedcount, fetch, loadcount, noCache, objectSources, scope, selectedItem, selectedType, update;
+    scope = null;
     selectedType = null;
     closestItems = [];
     selectedItem = null;
-    scope = null;
-    expectedcount = 3;
+    objectSources = ['belysning', 'kabelskap', 'natstationer'];
+    expectedcount = objectSources.length;
     loadcount = 0;
     comp = function(x, y) {
       if (x.dist < y.dist) {
@@ -48,19 +49,23 @@
     };
     return {
       update: function() {
+        var source, _i, _len, _results;
         scope = this;
-        return $http.get('data/version.json' + noCache()).then(function(res) {
-          return db.initDb(function() {
-            var k, v, versions;
-            versions = res.data;
-            for (k in versions) {
-              v = versions[k];
+        _results = [];
+        for (_i = 0, _len = objectSources.length; _i < _len; _i++) {
+          source = objectSources[_i];
+          _results.push($http.get('data/' + source + '_version.json' + noCache()).then(function(res) {
+            return db.initDb(function() {
+              var id, version;
+              version = res.data.version;
+              id = res.data.id;
               loadMessage.add('Kontrollerar version av databas');
-              db.needsUpdate(k, v, update, fetch);
-            }
-            return 1;
-          });
-        });
+              db.needsUpdate(id, version, update, fetch);
+              return 0;
+            });
+          }));
+        }
+        return _results;
       },
       setSelectedType: function(t) {
         return selectedType = t;
