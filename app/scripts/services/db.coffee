@@ -6,11 +6,28 @@ angular.module('TEMAPApp')
     timeoutId = null
     idb = null
     
-    req = indexedDB.open('TEMAP_DB',2)
+    dbVersion = 2
+    req = indexedDB.open('TEMAP_DB',dbVersion)
    
     #Get hold of the indexed-db object
     req.onsuccess = (evt)-> 
-      idb = req.result
+      db = req.result
+      if db.setVersion?
+        if db.version != dbVersion
+          versionReq = db.setVersion dbVersion
+          versionReq.onsuccess = () ->
+            if db.objectStoreNames.contains 'dataVersion'
+              db.deleteObjectStore 'dataVersion'
+            if db.objectStoreNames.contains 'data'
+              db.deleteObjectStore 'data'
+            
+            osVersion = db.createObjectStore 'dataVersion', keyPath:'n'
+            osData = db.createObjectStore 'data', keyPath:'n'
+            versionReq.result.oncomplete = () ->
+              idb = db
+      else
+        idb = db
+        
     
     req.onupgradeneeded = (evt) ->
       db = evt.target.result
@@ -43,27 +60,18 @@ angular.module('TEMAPApp')
           cb()
        
       needsUpdate: (name, version, update, noUpdate) ->
-        
-        console.log '0 needsUpdate::' + name 
         transaction = idb.transaction ['dataVersion'], 'readwrite'
-        console.log '1 needsUpdate::' + name 
         store = transaction.objectStore('dataVersion')
-        console.log '2 needsUpdate::' + name 
-        req = store.get(name)
-        console.log '3 needsUpdate::' + name 
+        req = store.get(name) 
         
         req.onerror = (evt) ->
-          console.log '4 needsUpdate::' + name 
           console.log 'IndexedDB error: ' + evt.target.errorCode
           
         req.onsuccess = (evt) ->
-          console.log '5 needsUpdate::' + name 
           #Compare versions
-          if !evt.target.result? || evt.target.result.version != version
-            console.log '6 needsUpdate::' + name 
+          if !evt.target.result? || evt.target.result.version != version 
             update name, version
-          else
-            console.log '7 needsUpdate::' + name 
+          else 
             noUpdate name
       
       persist: (name, version, data, cb) ->

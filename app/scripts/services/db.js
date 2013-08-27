@@ -2,12 +2,39 @@
 (function() {
   'use strict';
   angular.module('TEMAPApp').factory('db', function() {
-    var idb, req, timeoutId, updateVersion;
+    var dbVersion, idb, req, timeoutId, updateVersion;
     timeoutId = null;
     idb = null;
-    req = indexedDB.open('TEMAP_DB', 2);
+    dbVersion = 2;
+    req = indexedDB.open('TEMAP_DB', dbVersion);
     req.onsuccess = function(evt) {
-      return idb = req.result;
+      var db, versionReq;
+      db = req.result;
+      if (db.setVersion != null) {
+        if (db.version !== dbVersion) {
+          versionReq = db.setVersion(dbVersion);
+          return versionReq.onsuccess = function() {
+            var osData, osVersion;
+            if (db.objectStoreNames.contains('dataVersion')) {
+              db.deleteObjectStore('dataVersion');
+            }
+            if (db.objectStoreNames.contains('data')) {
+              db.deleteObjectStore('data');
+            }
+            osVersion = db.createObjectStore('dataVersion', {
+              keyPath: 'n'
+            });
+            osData = db.createObjectStore('data', {
+              keyPath: 'n'
+            });
+            return versionReq.result.oncomplete = function() {
+              return idb = db;
+            };
+          };
+        }
+      } else {
+        return idb = db;
+      }
     };
     req.onupgradeneeded = function(evt) {
       var db, osData, osVersion;
@@ -49,24 +76,16 @@
       },
       needsUpdate: function(name, version, update, noUpdate) {
         var store, transaction;
-        console.log('0 needsUpdate::' + name);
         transaction = idb.transaction(['dataVersion'], 'readwrite');
-        console.log('1 needsUpdate::' + name);
         store = transaction.objectStore('dataVersion');
-        console.log('2 needsUpdate::' + name);
         req = store.get(name);
-        console.log('3 needsUpdate::' + name);
         req.onerror = function(evt) {
-          console.log('4 needsUpdate::' + name);
           return console.log('IndexedDB error: ' + evt.target.errorCode);
         };
         return req.onsuccess = function(evt) {
-          console.log('5 needsUpdate::' + name);
           if ((evt.target.result == null) || evt.target.result.version !== version) {
-            console.log('6 needsUpdate::' + name);
             return update(name, version);
           } else {
-            console.log('7 needsUpdate::' + name);
             return noUpdate(name);
           }
         };
