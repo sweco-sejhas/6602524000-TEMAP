@@ -4,13 +4,13 @@
   angular.module('TEMAPApp').controller('ObjektTypCtrl', function($scope, $timeout, ObjectType, scrollItems, data) {
     $scope.objectTypes = [
       {
-        id: 'belysning',
+        id: 'belysningsstolpe',
         name: 'Belysningsstolpe'
       }, {
         id: 'kabelskap',
         name: 'Kabelskåp'
       }, {
-        id: 'natstationer',
+        id: 'natstation',
         name: 'Nätstation'
       }
     ];

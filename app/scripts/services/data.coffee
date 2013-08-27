@@ -8,7 +8,7 @@ angular.module('TEMAPApp')
     closestItems = []
     selectedItem = null
     
-    objectSources = ['belysning', 'kabelskap', 'natstationer']
+    objectSources = ['belysningsstolpe', 'kabelskap', 'natstation']
    
     expectedcount = objectSources.length
     loadcount = 0

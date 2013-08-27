@@ -3,13 +3,13 @@
 angular.module('TEMAPApp')
   .controller 'ObjektTypCtrl', ($scope, $timeout, ObjectType, scrollItems, data) ->
     $scope.objectTypes = [
-      id:'belysning'
+      id:'belysningsstolpe'
       name:'Belysningsstolpe'
      ,
       id:'kabelskap'
       name:'Kabelskåp'
      ,
-      id:'natstationer'
+      id:'natstation'
       name:'Nätstation']
       
     $scope.setType = (type) ->
