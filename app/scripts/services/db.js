@@ -49,16 +49,24 @@
       },
       needsUpdate: function(name, version, update, noUpdate) {
         var store, transaction;
+        console.log('0 needsUpdate::' + name);
         transaction = idb.transaction(['dataVersion'], 'readwrite');
+        console.log('1 needsUpdate::' + name);
         store = transaction.objectStore('dataVersion');
+        console.log('2 needsUpdate::' + name);
         req = store.get(name);
+        console.log('3 needsUpdate::' + name);
         req.onerror = function(evt) {
+          console.log('4 needsUpdate::' + name);
           return console.log('IndexedDB error: ' + evt.target.errorCode);
         };
         return req.onsuccess = function(evt) {
+          console.log('5 needsUpdate::' + name);
           if ((evt.target.result == null) || evt.target.result.version !== version) {
+            console.log('6 needsUpdate::' + name);
             return update(name, version);
           } else {
+            console.log('7 needsUpdate::' + name);
             return noUpdate(name);
           }
         };
