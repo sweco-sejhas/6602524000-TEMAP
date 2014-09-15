@@ -60,6 +60,10 @@
   color:inherit;
 }
 
+.map-popup {
+  color:#000;
+}
+
 #header-menu > div > ul {
   position:fixed;
   width:100%;

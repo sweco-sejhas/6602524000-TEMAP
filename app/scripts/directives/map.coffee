@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('TEMAPApp')
-  .directive('map', () ->
+  .directive('map', ($compile) ->
     template: '<div></div>'
     replace:true
     restrict: 'E'
@@ -48,15 +48,25 @@ angular.module('TEMAPApp')
           when 'ios' then ('http://maps.apple.com/?daddr=' + lat + ',' + lon)
           when 'wp' then ('ms-drive-to:?destination.latitude=' + lat + '&destination.longitude=' + lon)
           else ('http://maps.google.com/?daddr=' + lat + ',' + lon)
+          
+          
+      constructPopup = (item)->
+        item.href = constructHref item.la, item.lo
+        markerScope = scope.$new()
+        markerScope.data = item
+        el = $compile('<popup></popup>')(markerScope)
+        el[0]
+        
 
       scope.$watch 'markers', (val)->
         group.clearLayers()
         
         for item in val
-          itemMarker = new L.marker [item.la, item.lo], icon:new L.AnchorIcon 
+          itemMarker = new L.marker [item.la, item.lo], icon:new L.Icon 
             iconUrl:'styles/img/bally.png'
             iconSize:[32, 32]
-            href:constructHref item.la, item.lo
+            #href:constructHref item.la, item.lo
+          itemMarker.bindPopup(constructPopup item)
           group.addLayer itemMarker
         
         
@@ -66,11 +76,11 @@ angular.module('TEMAPApp')
           
         if val
           marker = new L.marker [val.la, val.lo], 
-            icon:new L.AnchorIcon 
+            icon:new L.Icon 
               iconUrl:'styles/img/power.png'
-              iconSize:[32, 37],
-              href:constructHref val.la, val.lo
+              iconSize:[32, 37]
             zIndexOffset:1000
+          marker.bindPopup(constructPopup val)
           marker.addTo map
           map.setView new L.LatLng(val.la, val.lo), 18, true
   )
