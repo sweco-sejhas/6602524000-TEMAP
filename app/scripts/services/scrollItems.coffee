@@ -47,6 +47,7 @@ angular.module('TEMAPApp')
           this.currentItems = items[0..end]
           
         $(window).scrollTop(0)
+        return
         
       setBaseItems: (arr)->
         baseItems = arr

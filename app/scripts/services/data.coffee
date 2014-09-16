@@ -86,18 +86,18 @@ angular.module('TEMAPApp')
       pickNClosest: (nbr, items) ->
         currItems = []
         count = 0
-        for i in [items.length-1..0]
-            item = items[i]
-            if count < nbr
-              count++
-              Heap.insort currItems, item,null,null,comp
-              items.splice i,1
-              
-            else if item.dist < currItems[currItems.length-1].dist
-              Heap.insort currItems, item,null,null,comp
-              currItems.pop()
-              items.splice i,1
-              
+        if(items.length > 0)
+          for i in [items.length-1..0]
+              item = items[i]
+              if count < nbr
+                count++
+                Heap.insort currItems, item,null,null,comp
+                items.splice i,1
+                
+              else if item.dist < currItems[currItems.length-1].dist
+                Heap.insort currItems, item,null,null,comp
+                currItems.pop()
+                items.splice i,1
         currItems
         
       getClosestItems: () ->

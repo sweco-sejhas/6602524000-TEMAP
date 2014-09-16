@@ -99,16 +99,18 @@
         var count, currItems, i, item, _i, _ref;
         currItems = [];
         count = 0;
-        for (i = _i = _ref = items.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
-          item = items[i];
-          if (count < nbr) {
-            count++;
-            Heap.insort(currItems, item, null, null, comp);
-            items.splice(i, 1);
-          } else if (item.dist < currItems[currItems.length - 1].dist) {
-            Heap.insort(currItems, item, null, null, comp);
-            currItems.pop();
-            items.splice(i, 1);
+        if (items.length > 0) {
+          for (i = _i = _ref = items.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
+            item = items[i];
+            if (count < nbr) {
+              count++;
+              Heap.insort(currItems, item, null, null, comp);
+              items.splice(i, 1);
+            } else if (item.dist < currItems[currItems.length - 1].dist) {
+              Heap.insort(currItems, item, null, null, comp);
+              currItems.pop();
+              items.splice(i, 1);
+            }
           }
         }
         return currItems;

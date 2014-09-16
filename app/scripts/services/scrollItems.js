@@ -54,7 +54,7 @@
           end = numberItems;
           this.currentItems = items.slice(0, +end + 1 || 9e9);
         }
-        return $(window).scrollTop(0);
+        $(window).scrollTop(0);
       },
       setBaseItems: function(arr) {
         baseItems = arr;
