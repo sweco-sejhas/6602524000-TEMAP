@@ -10,6 +10,7 @@ angular.module('TEMAPApp')
       markers:'='
       highlightMarker:'='
     link: (scope, element, attrs) ->
+      window.L_DISABLE_3D = true
       platform = 'other'
       if navigator.userAgent.match /Android/i
         platform = 'android'

@@ -13,6 +13,7 @@
       },
       link: function(scope, element, attrs) {
         var constructHref, constructPopup, group, map, marker, platform, tiles;
+        window.L_DISABLE_3D = true;
         platform = 'other';
         if (navigator.userAgent.match(/Android/i)) {
           platform = 'android';
