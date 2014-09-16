@@ -27,7 +27,7 @@
           fadeAnimation: platform !== 'wp' && platform !== 'android',
           zoomAnimation: platform !== 'wp' && platform !== 'android',
           markerZoomAnimation: platform !== 'wp' && platform !== 'android',
-          touchZoom: platform !== 'wp'
+          touchZoom: platform !== 'wp' && platform !== 'android'
         });
         map.setView([55.37246, 13.15874], 16);
         tiles = new L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
