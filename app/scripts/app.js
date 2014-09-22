@@ -3,7 +3,9 @@
   'use strict';
   var TEMAPApp;
 
-  TEMAPApp = angular.module('TEMAPApp', ['ui.bootstrap', 'infinite-scroll']);
+  TEMAPApp = angular.module('TEMAPApp', ['ui.bootstrap', 'infinite-scroll'], function($compileProvider) {
+    return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|ms-drive-to):/);
+  });
 
   window.TEMAPApp = TEMAPApp;
 

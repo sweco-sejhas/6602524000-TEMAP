@@ -1,6 +1,8 @@
 'use strict'
 
-TEMAPApp = angular.module 'TEMAPApp', ['ui.bootstrap','infinite-scroll']
+TEMAPApp = angular.module 'TEMAPApp', ['ui.bootstrap','infinite-scroll'], ($compileProvider)->
+  $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|file|ms-drive-to):/ 
+  
 window.TEMAPApp = TEMAPApp
 
 TEMAPApp.factory 'ObjectType', (geo)->
