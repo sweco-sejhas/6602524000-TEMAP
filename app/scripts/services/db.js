@@ -47,6 +47,7 @@
       });
     };
     req.onerror = function(evt) {
+      alert(evt.target.errorCode);
       return console.log('IndexedDB error: ' + evt.target.errorCode);
     };
     updateVersion = function(name, version, cb) {
@@ -64,16 +65,13 @@
     };
     return {
       initDb: function(cb) {
-        alert('initdb-start');
         var scope;
         scope = this;
         if (idb === null) {
           return timeoutId = setTimeout(function() {
-            alert('initdb-timeout');
             return scope.initDb(cb);
           }, 10);
         } else {
-          alert('initdb-cb');
           return cb();
         }
       },
