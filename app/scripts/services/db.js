@@ -64,13 +64,16 @@
     };
     return {
       initDb: function(cb) {
+        alert('initdb-start');
         var scope;
         scope = this;
         if (idb === null) {
           return timeoutId = setTimeout(function() {
+            alert('initdb-timeout');
             return scope.initDb(cb);
           }, 10);
         } else {
+          alert('initdb-cb');
           return cb();
         }
       },
