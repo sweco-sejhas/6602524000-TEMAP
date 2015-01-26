@@ -2,11 +2,12 @@
 (function() {
   'use strict';
   angular.module('TEMAPApp').factory('db', function() {
-    var dbVersion, idb, req, timeoutId, updateVersion;
+    var browserObject, dbVersion, idb, req, timeoutId, updateVersion;
     timeoutId = null;
     idb = null;
     dbVersion = 2;
-    req = indexedDB.open('TEMAP_DB', dbVersion);
+    browserObject = window.overrideIndexedDB || window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    req = browserObject.open('TEMAP_DB', dbVersion);
     req.onsuccess = function(evt) {
       var db, versionReq;
       db = req.result;
@@ -47,7 +48,6 @@
       });
     };
     req.onerror = function(evt) {
-      alert(evt.target.errorCode);
       return console.log('IndexedDB error: ' + evt.target.errorCode);
     };
     updateVersion = function(name, version, cb) {

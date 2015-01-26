@@ -7,7 +7,10 @@ angular.module('TEMAPApp')
     idb = null
     
     dbVersion = 2
-    req = indexedDB.open('TEMAP_DB',dbVersion)
+    
+    browserObject = window.overrideIndexedDB || window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    
+    req = browserObject.open('TEMAP_DB',dbVersion)
    
     #Get hold of the indexed-db object
     req.onsuccess = (evt)-> 
